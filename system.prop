@@ -13,7 +13,6 @@ ro.ril.telephony.nstrings=4
 
 # RAM optimizations
 #persist.sys.ram_minfree=138240
-config.disable_atlas=true
 # ro.sys.fw.trim_enable_memory=805306368
 ro.sys.fw.trim_enable_memory=736870912
 ro.sys.fw.use_trim_settings=true
@@ -42,6 +41,9 @@ ro.egl.destroy_after_detach=true
 
 # Google Assistant
 ro.opa.eligible_device=true
+
+# sdcardfs
+ro.sys.sdcardfs=true
 
 # ADB
 ro.debug_level=0x4948
