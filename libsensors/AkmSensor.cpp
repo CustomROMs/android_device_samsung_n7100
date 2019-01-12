@@ -147,6 +147,7 @@ int AkmSensor::enable(int32_t handle, int en)
     }
 
     if (uint32_t(what) >= numSensors)
+        ALOGE("AkmSensor::enable", " error ", uint32_t(what))
         return -EINVAL;
 
     int newState  = en ? 1 : 0;
@@ -162,8 +163,10 @@ int AkmSensor::enable(int32_t handle, int en)
         short flags = newState;
         if (en){
             err = akm_enable_sensor(sensor_type);
+            ALOGE("AkmSensor::enable", " ", err)
         }else{
             err = akm_disable_sensor(sensor_type);
+            ALOGE("AkmSensor::enable", " ", err)
         }
 
         err = sspEnable(LOGTAG, SSP_MAG, en);
