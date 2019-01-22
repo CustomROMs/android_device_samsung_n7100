@@ -147,7 +147,6 @@ int AkmSensor::enable(int32_t handle, int en)
     }
 
     if (uint32_t(what) >= numSensors)
-        ALOGE("AkmSensor::enable", " error ", uint32_t(what))
         return -EINVAL;
 
     int newState  = en ? 1 : 0;
@@ -159,14 +158,15 @@ int AkmSensor::enable(int32_t handle, int en)
 
         switch (what) {
             case MagneticField: sensor_type = SENSOR_TYPE_MAGNETIC_FIELD; break;
+            ALOGD(LOGTAG, " case what ", what);
         }
         short flags = newState;
         if (en){
+            ALOGD(LOGTAG, " en status ", en);
             err = akm_enable_sensor(sensor_type);
-            ALOGE("AkmSensor::enable", " ", err)
         }else{
+            ALOGD(LOGTAG, " en status ", en);
             err = akm_disable_sensor(sensor_type);
-            ALOGE("AkmSensor::enable", " ", err)
         }
 
         err = sspEnable(LOGTAG, SSP_MAG, en);
