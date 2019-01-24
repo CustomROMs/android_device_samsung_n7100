@@ -29,21 +29,12 @@
 
 #define LOGTAG "PressureSensor"
 
-#define ALOG_NDEBUG 0
-#define LOG_NDEBUG 0
-#define LOG_NIDEBUG 0
-#define LOG_NDDEBUG 0
-
-/*
- * The BMP driver gives pascal values.
- * It needs to be changed into hectoPascal
- */
-#define PRESSURE_HECTO (1.0f/100.0f)
+#define PRESSURE_CONVERT(x) (x/4096.0f)
 
 /*****************************************************************************/
 
 PressureSensor::PressureSensor()
-    : SensorBase(NULL, "pressure_sensor"),
+    : SensorBase(NULL, "barometer_sensor"),
       mEnabled(0),
       mInputReader(4),
       mHasPendingEvent(false)
@@ -73,7 +64,7 @@ int PressureSensor::setInitialState() {
     if (!ioctl(data_fd, EVIOCGABS(EVENT_TYPE_PRESSURE), &absinfo)) {
         // make sure to report an event immediately
         mHasPendingEvent = true;
-        mPendingEvent.pressure = absinfo.value * PRESSURE_HECTO;
+        mPendingEvent.pressure = PRESSURE_CONVERT(absinfo.value);
     }
     return 0;
 }
@@ -100,15 +91,19 @@ bool PressureSensor::hasPendingEvents() const {
     return mHasPendingEvent;
 }
 
-int PressureSensor::setDelay(int32_t handle, int64_t ns)
+int PressureSensor::setDelay(int32_t handle, int64_t delay)
 {
     int fd;
+    if (delay < 10000000)
+        delay = 10;
+    else
+        delay = delay / 1000000;
 
     strcpy(&input_sysfs_path[input_sysfs_path_len], "pressure_poll_delay");
     fd = open(input_sysfs_path, O_RDWR);
     if (fd >= 0) {
         char buf[80];
-        sprintf(buf, "%lld", ns);
+        sprintf(buf, "%lld", delay);
         write(fd, buf, strlen(buf)+1);
         close(fd);
         return 0;
@@ -139,8 +134,8 @@ int PressureSensor::readEvents(sensors_event_t* data, int count)
     while (count && mInputReader.readEvent(&event)) {
         int type = event->type;
         if (type == EV_REL) {
-            if (event->code == EVENT_TYPE_PRESSURE) {
-                mPendingEvent.pressure = event->value * PRESSURE_HECTO;
+            if (event->code == REL_X) {
+                mPendingEvent.pressure = PRESSURE_CONVERT(event->value);
             }
         } else if (type == EV_SYN) {
             mPendingEvent.timestamp = timevalToNano(event->time);
