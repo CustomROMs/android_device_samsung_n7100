@@ -31,11 +31,6 @@
 
 #define LOGTAG "ProximitySensor"
 
-#define ALOG_NDEBUG 0
-#define LOG_NDEBUG 0
-#define LOG_NIDEBUG 0
-#define LOG_NDDEBUG 0
-
 /*****************************************************************************/
 
 ProximitySensor::ProximitySensor()
@@ -76,7 +71,18 @@ int ProximitySensor::setInitialState() {
 
 int ProximitySensor::setDelay(int32_t handle, int64_t ns)
 {
-	return 0;
+    int fd;
+
+    strcpy(&input_sysfs_path[input_sysfs_path_len], "poll_delay");
+    fd = open(input_sysfs_path, O_RDWR);
+    if (fd >= 0) {
+        char buf[80];
+        sprintf(buf, "%lld", ns);
+        write(fd, buf, strlen(buf)+1);
+        close(fd);
+        return 0;
+    }
+    return -1;
 }
 
 int ProximitySensor::enable(int32_t handle, int en) {
@@ -84,10 +90,8 @@ int ProximitySensor::enable(int32_t handle, int en) {
     int flags = en ? 1 : 0;
     int err;
     //ALOGD("%s: Enable: %i", __func__, en);
-    ALOGD(LOGTAG, "Check flags", flags);
     if (flags != mEnabled) {
          err = sspEnable(LOGTAG, SSP_PROX, en);
-         ALOGD(LOGTAG, "Err status", err);
          if(err >= 0){
              mEnabled = flags;
              setInitialState();
@@ -139,7 +143,7 @@ int ProximitySensor::readEvents(sensors_event_t* data, int count)
                 numEventReceived++;
             }
         } else {
-            ALOGD("%s: unknown event (type=%d, code=%d)",LOGTAG,
+            ALOGE("%s: unknown event (type=%d, code=%d)",LOGTAG,
                     type, event->code);
         }
         mInputReader.next();

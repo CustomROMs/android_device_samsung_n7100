@@ -29,10 +29,7 @@
 
 #define LOGTAG "LightSensor"
 
-#define ALOG_NDEBUG 0
-#define LOG_NDEBUG 0
-#define LOG_NIDEBUG 0
-#define LOG_NDDEBUG 0
+// #define ALOG_NDEBUG 0
 
 /*****************************************************************************/
 
@@ -76,7 +73,7 @@ int LightSensor::setDelay(int32_t handle, int64_t ns)
 {
     int fd;
 
-    strcpy(&input_sysfs_path[input_sysfs_path_len], "light_poll_delay");
+    strcpy(&input_sysfs_path[input_sysfs_path_len], "poll_delay");
     fd = open(input_sysfs_path, O_RDWR);
     if (fd >= 0) {
         char buf[80];
@@ -142,7 +139,7 @@ int LightSensor::readEvents(sensors_event_t* data, int count)
                 numEventReceived++;
             }
         } else {
-            ALOGD("%s: unknown event (type=%d, code=%d)", LOGTAG,
+            ALOGE("%s: unknown event (type=%d, code=%d)", LOGTAG,
                     type, event->code);
         }
         mInputReader.next();

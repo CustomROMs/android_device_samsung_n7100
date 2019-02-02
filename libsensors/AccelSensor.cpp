@@ -28,11 +28,6 @@
 
 #define LOGTAG "AccelerometerSensor"
 
-#define ALOG_NDEBUG 0
-#define LOG_NDEBUG 0
-#define LOG_NIDEBUG 0
-#define LOG_NDDEBUG 0
-
 /*****************************************************************************/
 AccelSensor::AccelSensor()
     : SensorBase(NULL, "accelerometer_sensor"),
@@ -70,10 +65,8 @@ int AccelSensor::setInitialState()
 int AccelSensor::enable(int32_t handle, int en) {
     int flags = en ? 1 : 0;
     int err;
-    ALOGD(LOGTAG, "Check flags", flags);
     if (flags != mEnabled) {
          err = sspEnable(LOGTAG, SSP_ACCEL, en);
-         ALOGD(LOGTAG, "Err status", err);
          if(err >= 0){
              mEnabled = flags;
              setInitialState();
@@ -102,7 +95,7 @@ int AccelSensor::setDelay(int32_t handle, int64_t ns)
         ns = 10000000; // Minimum on stock
     }
 
-    strcpy(&input_sysfs_path[input_sysfs_path_len], "acc_poll_delay");
+    strcpy(&input_sysfs_path[input_sysfs_path_len], "poll_delay");
     fd = open(input_sysfs_path, O_RDWR);
     if (fd >= 0) {
         char buf[80];
@@ -152,7 +145,7 @@ int AccelSensor::readEvents(sensors_event_t* data, int count)
                 numEventReceived++;
             }
         } else {
-            ALOGD("%s: unknown event (type=%d, code=%d)", LOGTAG,
+            ALOGE("%s: unknown event (type=%d, code=%d)", LOGTAG,
                     type, event->code);
         }
 

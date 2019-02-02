@@ -47,8 +47,6 @@ public:
     virtual int enable(int32_t handle, int enabled);
     virtual int readEvents(sensors_event_t* data, int count);
     void processEvent(int code, int value);
-    int batch(int handle, int flags, int64_t period_ns, int64_t timeout);
-    int flush(int handle);
 
     int setInitialState();
 
@@ -57,7 +55,6 @@ private:
     int update_delay();
     void *mLibAKM;
     uint32_t mEnabled;
-    uint32_t mFlushed;
     uint32_t mPendingMask;
     InputEventCircularReader mInputReader;
     sensors_event_t mPendingEvents[numSensors];

@@ -3,7 +3,6 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
-
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
@@ -31,8 +30,6 @@
 #include "AkmSensor.h"
 
 #define LOGTAG "AkmSensor"
-
-#define DEBUG 1
 
 //#define ALOG_NDEBUG 0
 
@@ -158,14 +155,11 @@ int AkmSensor::enable(int32_t handle, int en)
 
         switch (what) {
             case MagneticField: sensor_type = SENSOR_TYPE_MAGNETIC_FIELD; break;
-            ALOGD(LOGTAG, " case what ", what);
         }
         short flags = newState;
         if (en){
-            ALOGD(LOGTAG, " en status ", en);
             err = akm_enable_sensor(sensor_type);
         }else{
-            ALOGD(LOGTAG, " en status ", en);
             err = akm_disable_sensor(sensor_type);
         }
 
@@ -213,14 +207,6 @@ int AkmSensor::setDelay(int32_t handle, int64_t ns)
         write(fd, buf, strlen(buf)+1);
         close(fd);
      }
-
-    switch (handle) {
-        case ID_A: what = Accelerometer; break;
-        case ID_M: what = MagneticField; break;
-        case ID_O: what = Orientation;   break;
-    }
-    if (uint32_t(what) >= numSensors)
-        return -EINVAL;
 
     mDelays[what] = ns;
     return update_delay();
@@ -270,29 +256,11 @@ int AkmSensor::readEvents(sensors_event_t* data, int count)
     if (count < 1)
         return -EINVAL;
 
-    int numEventReceived = 0;
-    int sensorId = ID_A;
-    while (mFlushed) {
-        if (mFlushed & (1 << sensorId)) { /* Send flush META_DATA_FLUSH_COMPLETE immediately */
-            sensors_event_t sensor_event;
-            memset(&sensor_event, 0, sizeof(sensor_event));
-            sensor_event.version = META_DATA_VERSION;
-            sensor_event.type = SENSOR_TYPE_META_DATA;
-            sensor_event.meta_data.sensor = sensorId;
-            sensor_event.meta_data.what = 0;
-            *data++ = sensor_event;
-            count--;
-            numEventReceived++;
-            mFlushed &= ~(0x01 << sensorId);
-            ALOGD_IF(DEBUG, "AkmSensor: %s Flushed sensorId: %d", __func__, sensorId);
-        }
-        sensorId++;
-    }
-
     ssize_t n = mInputReader.fill(data_fd);
     if (n < 0)
         return n;
 
+    int numEventReceived = 0;
     input_event const* event;
 
     while (count && mInputReader.readEvent(&event)) {
@@ -351,18 +319,4 @@ void AkmSensor::processEvent(int code, int value)
             ALOGV("AkmSensor: unkown REL event code=%d, value=%d", code, value);
             break;
     }
-}
-
-int AkmSensor::batch(int handle, int flags, int64_t period_ns, int64_t timeout) {
-    return 0;
-}
-
-int AkmSensor::flush(int handle)
-{
-    if (mEnabled){
-        mFlushed |= (1 << handle);
-        ALOGD("AkmSensor: %s: handle: %d", __func__, handle);
-        return 0;
-    }
-    return -EINVAL;
 }
