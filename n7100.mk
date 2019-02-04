@@ -101,6 +101,10 @@ PRODUCT_PACKAGES += \
     libnfc_jni \
     Nfc \
     Tag
+    
+#GPS
+PRODUCT_PACKAGES += \
+	libdmitry 
 
 # NFC HAL
 PRODUCT_PACKAGES += \
