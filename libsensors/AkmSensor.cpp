@@ -29,6 +29,8 @@
 #include <cutils/log.h>
 #include "AkmSensor.h"
 
+#define DEBUG 0
+
 #define LOGTAG "AkmSensor"
 
 //#define ALOG_NDEBUG 0
@@ -202,6 +204,7 @@ int AkmSensor::setDelay(int32_t handle, int64_t ns)
     if (ns < 0)
         return -EINVAL;
 
+    uint32_t sensor_type = 0;
     switch (handle) {
         case ID_A: sensor_type = SENSOR_TYPE_ACCELEROMETER; break;
         case ID_M: sensor_type = SENSOR_TYPE_MAGNETIC_FIELD; break;
@@ -379,9 +382,6 @@ void AkmSensor::processEvent(int code, int value)
                 status = 0;
             mPendingMask |= 1<<Orientation;
             mPendingEvents[Orientation].orientation.status = status;
-            break;
-        default:
-            ALOGV("AkmSensor: unkown REL event code=%d, value=%d", code, value);
             break;
     }
 }

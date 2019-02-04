@@ -63,6 +63,8 @@
 #define SENSORS_GYROSCOPE_HANDLE        5
 #define SENSORS_PRESSURE_HANDLE         6
 
+#define DEBUG 0
+
 #define AKM_FTRACE 0
 #define AKM_DEBUG 0
 #define AKM_DATA 0
@@ -396,7 +398,7 @@ static int open_sensors(const struct hw_module_t* module, const char* id,
         memset(&dev->device, 0, sizeof(sensors_poll_device_1_t));
 
         dev->device.common.tag      = HARDWARE_DEVICE_TAG;
-        dev->device.common.version  = SENSORS_DEVICE_API_VERSION_1_0;
+        dev->device.common.version  = SENSORS_DEVICE_API_VERSION_1_3;
         dev->device.common.module   = const_cast<hw_module_t*>(module);
         dev->device.common.close    = device__close;
         dev->device.activate        = device__activate;
