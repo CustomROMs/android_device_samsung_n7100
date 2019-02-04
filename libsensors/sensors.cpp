@@ -106,7 +106,7 @@ static const struct sensor_t sSensorList[] = {
           1, SENSORS_LIGHT_HANDLE,
           SENSOR_TYPE_LIGHT, 10240.0f, 1.0f, 0.75f, 0, 0, 0,
           SENSOR_STRING_TYPE_LIGHT, "", 0, SENSOR_FLAG_CONTINUOUS_MODE, {0, 0} },
-};
+};  
 
 
 static int open_sensors(const struct hw_module_t* module, const char* id,
@@ -117,7 +117,6 @@ static int sensors__get_sensors_list(struct sensors_module_t* module,
                                      struct sensor_t const** list)
 {
         *list = sSensorList;
-        ALOGD(LOGTAG, " Sensors list ", *list);
         return ARRAY_SIZE(sSensorList);
 }
 
@@ -148,8 +147,6 @@ struct sensors_poll_context_t {
     int pollEvents(sensors_event_t* data, int count);
     int batch(int handle, int flags, int64_t period_ns, int64_t timeout);
 
-    // return true if the constructor is completed
-    bool isValid() { return mInitialized; };
     int flush(int handle);
 
 private:
@@ -158,8 +155,7 @@ private:
         proximity       = 1,
         akm             = 2,
         gyro            = 3,
-        accel           = 4,
-        pressure        = 5,
+        pressure        = 4,
         numSensorDrivers,
         numFds,
     };
@@ -169,13 +165,10 @@ private:
     struct pollfd mPollFds[numFds];
     int mWritePipeFd;
     SensorBase* mSensors[numSensorDrivers];
-    // return true if the constructor is completed
-    bool mInitialized;
 
     int handleToDriver(int handle) const {
       switch (handle) {
             case ID_A:
-                return accel;
             case ID_M:
             case ID_O:
                 return akm;
@@ -216,11 +209,6 @@ sensors_poll_context_t::sensors_poll_context_t()
     mPollFds[gyro].events = POLLIN;
     mPollFds[gyro].revents = 0;
 
-    mSensors[accel] = new AccelSensor();
-    mPollFds[accel].fd = mSensors[accel]->getFd();
-    mPollFds[accel].events = POLLIN;
-    mPollFds[accel].revents = 0;
-
     mSensors[pressure] = new PressureSensor();
     mPollFds[pressure].fd = mSensors[pressure]->getFd();
     mPollFds[pressure].events = POLLIN;
@@ -236,7 +224,6 @@ sensors_poll_context_t::sensors_poll_context_t()
     mPollFds[wake].fd = wakeFds[0];
     mPollFds[wake].events = POLLIN;
     mPollFds[wake].revents = 0;
-    mInitialized = true;
 }
 
 sensors_poll_context_t::~sensors_poll_context_t() {
@@ -245,14 +232,14 @@ sensors_poll_context_t::~sensors_poll_context_t() {
     }
     close(mPollFds[wake].fd);
     close(mWritePipeFd);
-    mInitialized = false;
 }
 
 int sensors_poll_context_t::activate(int handle, int enabled) {
-    if (!mInitialized) return -EINVAL;
     int index = handleToDriver(handle);
-    ALOGI("Sensors: handle: %i", handle);
     if (index < 0) return index;
+    if (index == gyro && enabled == 0) {
+        usleep(200*1000);
+    }
     int err =  mSensors[index]->enable(handle, enabled);
     if (enabled && !err) {
         const char wakeMessage(WAKE_MESSAGE);
@@ -289,7 +276,34 @@ int sensors_poll_context_t::pollEvents(sensors_event_t* data, int count)
                 data += nb;
             }
         }
-
+        switch (data->type) {
+            case SENSOR_TYPE_ACCELEROMETER:
+                ALOGD_IF(DEBUG, "Sensors: Accl x:%f y:%f z:%f",
+                    data->acceleration.x,
+                    data->acceleration.y,
+                    data->acceleration.z);
+                break;
+            case SENSOR_TYPE_MAGNETIC_FIELD:
+                ALOGD_IF(DEBUG, "Sensors: Magn x:%f y:%f z:%f",
+                    data->magnetic.x,
+                    data->magnetic.y,
+                    data->magnetic.z);
+                break;
+            case SENSOR_TYPE_ORIENTATION:
+                ALOGD_IF(DEBUG, "Sensors: Orie x:%f y:%f z:%f",
+                    data->orientation.x,
+                    data->orientation.y,
+                    data->orientation.z);
+                break;
+            case SENSOR_TYPE_GYROSCOPE:
+                ALOGD_IF(DEBUG, "Sensors: Gyro x:%f y:%f z:%f",
+                    data->gyro.x,
+                    data->gyro.y,
+                    data->gyro.z);
+                break;
+            default:
+                break;
+        }
         if (count) {
             // we still have some room, so try to see if we can get
             // some events immediately or just wait if we don't have
@@ -297,7 +311,7 @@ int sensors_poll_context_t::pollEvents(sensors_event_t* data, int count)
             n = poll(mPollFds, numFds, nbEvents ? 0 : -1);
             if (n<0) {
                 ALOGE("poll() failed (%s)", strerror(errno));
-                return -errno;
+                return nbEvents;
             }
             if (mPollFds[wake].revents & POLLIN) {
                 char msg;
@@ -338,19 +352,19 @@ static int device__close(struct hw_device_t *dev)
     return 0;
 }
 
-static int device__activate(sensors_poll_device_t *dev,
+static int device__activate(struct sensors_poll_device_t *dev,
         int handle, int enabled) {
     sensors_poll_context_t *ctx = (sensors_poll_context_t *)dev;
     return ctx->activate(handle, enabled);
 }
 
-static int device__setDelay(sensors_poll_device_t *dev,
+static int device__setDelay(struct sensors_poll_device_t *dev,
         int handle, int64_t ns) {
     sensors_poll_context_t *ctx = (sensors_poll_context_t *)dev;
     return ctx->setDelay(handle, ns);
 }
 
-static int device__poll(sensors_poll_device_t *dev,
+static int device__poll(struct sensors_poll_device_t *dev,
         sensors_event_t* data, int count) {
     sensors_poll_context_t *ctx = (sensors_poll_context_t *)dev;
     return ctx->pollEvents(data, count);
@@ -366,7 +380,7 @@ static int device__batch(struct sensors_poll_device_1 *dev,
 static int device__flush(struct sensors_poll_device_1 *dev,
                       int handle)
 {
-    sensors_poll_context_t *ctx = (sensors_poll_context_t *)dev;
+    sensors_poll_context_t* ctx = (sensors_poll_context_t *)dev;
     return ctx->flush(handle);
 }
 
@@ -382,12 +396,14 @@ static int open_sensors(const struct hw_module_t* module, const char* id,
         memset(&dev->device, 0, sizeof(sensors_poll_device_1_t));
 
         dev->device.common.tag      = HARDWARE_DEVICE_TAG;
-        dev->device.common.version  = SENSORS_DEVICE_API_VERSION_1_3;
+        dev->device.common.version  = SENSORS_DEVICE_API_VERSION_1_0;
         dev->device.common.module   = const_cast<hw_module_t*>(module);
         dev->device.common.close    = device__close;
         dev->device.activate        = device__activate;
         dev->device.setDelay        = device__setDelay;
         dev->device.poll            = device__poll;
+
+        /* Batch processing */
         dev->device.batch           = device__batch;
         dev->device.flush           = device__flush;
 

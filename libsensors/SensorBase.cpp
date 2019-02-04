@@ -77,10 +77,6 @@ int SensorBase::getFd() const {
     return data_fd;
 }
 
-int SensorBase::setDelay(int32_t handle, int64_t ns) {
-    return 0;
-}
-
 int SensorBase::batch(int handle, int flags, int64_t period_ns, int64_t timeout)
 {
     (void)flags;
@@ -92,6 +88,11 @@ int SensorBase::flush(int handle)
 {
     return 0;
 }
+
+int SensorBase::setDelay(int32_t handle, int64_t ns) {
+    return 0;
+}
+
 bool SensorBase::hasPendingEvents() const {
     return false;
 }
@@ -99,7 +100,7 @@ bool SensorBase::hasPendingEvents() const {
 int64_t SensorBase::getTimestamp() {
     struct timespec t;
     t.tv_sec = t.tv_nsec = 0;
-    clock_gettime(CLOCK_MONOTONIC, &t);
+    clock_gettime(CLOCK_BOOTTIME, &t);
     return int64_t(t.tv_sec)*1000000000LL + t.tv_nsec;
 }
 

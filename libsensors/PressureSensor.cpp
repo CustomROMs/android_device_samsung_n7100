@@ -29,11 +29,6 @@
 
 #define LOGTAG "PressureSensor"
 
-#define ALOG_NDEBUG 0
-#define LOG_NDEBUG 0
-#define LOG_NIDEBUG 0
-#define LOG_NDDEBUG 0
-
 /*
  * The BMP driver gives pascal values.
  * It needs to be changed into hectoPascal
@@ -81,9 +76,7 @@ int PressureSensor::setInitialState() {
 int PressureSensor::enable(int32_t handle, int en) {
     int flags = en ? 1 : 0;
     int err;
-    ALOGD(LOGTAG, "Check flags", flags);
     if (flags != mEnabled) {
-         ALOGD(LOGTAG, "Err status", err);
          err = sspEnable(LOGTAG, SSP_PRESS, en);
          if(err >= 0){
              mEnabled = flags;
@@ -150,7 +143,7 @@ int PressureSensor::readEvents(sensors_event_t* data, int count)
                 numEventReceived++;
             }
         } else {
-            ALOGD("%s: unknown event (type=%d, code=%d)", LOGTAG,
+            ALOGE("%s: unknown event (type=%d, code=%d)", LOGTAG,
                     type, event->code);
         }
         mInputReader.next();

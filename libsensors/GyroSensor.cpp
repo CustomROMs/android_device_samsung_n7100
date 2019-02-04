@@ -28,11 +28,6 @@
 
 #define LOGTAG "GyroSensor"
 
-#define ALOG_NDEBUG 0
-#define LOG_NDEBUG 0
-#define LOG_NIDEBUG 0
-#define LOG_NDDEBUG 0
-
 #define FETCH_FULL_EVENT_BEFORE_RETURN 1
 #define IGNORE_EVENT_TIME 350000000
 /*****************************************************************************/
@@ -86,11 +81,8 @@ int GyroSensor::setInitialState() {
 int GyroSensor::enable(int32_t handle, int en) {
     int flags = en ? 1 : 0;
     int err;
-    ALOGD(LOGTAG, "Check flags", flags);
     if (flags != mEnabled) {
-
          err = sspEnable(LOGTAG, SSP_GYRO, en);
-         ALOGD(LOGTAG, "Err status", err);
          if(err >= 0){
              mEnabled = flags;
              setInitialState();
@@ -165,7 +157,7 @@ again:
                 count--;
             }
         } else {
-            ALOGD("%s: unknown event (type=%d, code=%d)", LOGTAG,
+            ALOGE("%s: unknown event (type=%d, code=%d)", LOGTAG,
                     type, event->code);
         }
         mInputReader.next();

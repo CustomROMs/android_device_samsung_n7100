@@ -26,9 +26,7 @@ LOCAL_MODULE := sensors.$(TARGET_BOOTLOADER_BOARD_NAME)
 LOCAL_MODULE_RELATIVE_PATH := hw
 
 LOCAL_MODULE_TAGS := optional
-
 LOCAL_VENDOR_MODULE := true
-
 LOCAL_CFLAGS := -DALOG_TAG=\"Sensors\"
 LOCAL_SRC_FILES := 						\
 				sensors.cpp 			\
@@ -37,9 +35,9 @@ LOCAL_SRC_FILES := 						\
 				ProximitySensor.cpp		\
 				AkmSensor.cpp                   \
 				GyroSensor.cpp                  \
-                                InputEventReader.cpp            \
-                                AccelSensor.cpp                 \
-                                PressureSensor.cpp
+                InputEventReader.cpp            \
+                AccelSensor.cpp                 \
+                PressureSensor.cpp
 
 LOCAL_SHARED_LIBRARIES := liblog libcutils libdl
 LOCAL_PRELINK_MODULE := false
