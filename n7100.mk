@@ -43,10 +43,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/init.target.rc:root/init.target.rc \
     $(LOCAL_PATH)/rootdir/init.target.usb.rc:root/init.target.usb.rc
 
-# HIDL
-PRODUCT_COPY_FILES += \
-    $(COMMON_PATH)/manifest.xml:system/vendor/manifest.xml
-
 # Audio
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/tiny_hw.xml:system/etc/sound/t03g
@@ -63,17 +59,11 @@ PRODUCT_PACKAGES += \
 
 # Gps
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/gps.xml:system/etc/gps.xml \
-	$(LOCAL_PATH)/gps_daemon.sh:system/bin/gps_daemon.sh
+    $(LOCAL_PATH)/configs/gps.xml:system/etc/gps.xml
 
 # idc 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/idc/sec_e-pen.idc:system/usr/idc/sec_e-pen.idc
-
-# RIL subscription workaround
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/restart_rild.sh:system/bin/restart_rild.sh \
-    $(LOCAL_PATH)/configs/rild_restart.rc:system/etc/init/rild_restart.rc
 
 # Keylayout
 PRODUCT_COPY_FILES += \
@@ -104,7 +94,8 @@ PRODUCT_PACKAGES += \
     
 #GPS
 PRODUCT_PACKAGES += \
-	libdmitry 
+	libdmitry \
+    libshim_gpsd
 
 # NFC HAL
 PRODUCT_PACKAGES += \
@@ -149,3 +140,6 @@ PRODUCT_COPY_FILES += \
      $(LOCAL_PATH)/configs/94-kernel.sh:system/addon.d/94-kernel.sh
 
 $(call inherit-product-if-exists, vendor/samsung/n7100/n7100-vendor.mk)
+
+# Vendor properties
+-include $(LOCAL_PATH)/vendor_prop.mk
