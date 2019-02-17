@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2016 The LineageOS Project
+# Copyright (C) 2017 TeamNexus
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,13 +15,18 @@
 #
 
 LOCAL_PATH := $(call my-dir)
-
 include $(CLEAR_VARS)
 
-LOCAL_SRC_FILES := samsung_gps.cpp
-LOCAL_SHARED_LIBRARIES := libgui
-LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)
-LOCAL_MODULE := libshim_gpsd
+LOCAL_SRC_FILES := \
+	gpsd.cpp
+
+LOCAL_SHARED_LIBRARIES := \
+	liblog \
+	libsensor
+
+LOCAL_MODULE := gpsd_shim
 LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+LOCAL_VENDOR_MODULE := true
 
 include $(BUILD_SHARED_LIBRARY)
