@@ -578,7 +578,7 @@ int akm8963_deactivate(struct smdk4x12_sensors_handlers *handlers)
 int akm8963_set_delay(struct smdk4x12_sensors_handlers *handlers, int64_t delay)
 {
 	struct akm8963_data *data;
-	char path_delay[PATH_MAX] = "/sys/class/sensors/ssp_sensor/mag_poll_delay";
+	char path_delay[PATH_MAX] = "/sys/class/sensors/ssp_sensor/poll_delay";
 	int rc;
 
 	ALOGD("%s(%p, %" PRId64 ")", __func__, handlers, delay);
