@@ -261,9 +261,10 @@ int sysfs_value_write(char *path, int64_t value)
 		return -1;
 
 	fd = open(path, O_WRONLY);
-	if (fd < 0)
+	if (fd < 0){
 		ALOGE("%s: Fd is < 0", __func__);
 		goto error;
+	}
 
 	snprintf((char *) &buffer, sizeof(buffer), "%" PRId64 "\n", value);
 
