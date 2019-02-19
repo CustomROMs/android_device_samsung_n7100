@@ -162,6 +162,11 @@ int bmp180_set_delay(struct smdk4x12_sensors_handlers *handlers, int64_t delay)
 
 	data = (struct bmp180_data *) handlers->data;
 
+	if (delay < 10000000)
+		delay = 10;
+	else
+		delay = delay / 1000000;
+
 	rc = sysfs_value_write(data->path_delay, (int) delay);
 	if (rc < 0) {
 		ALOGE("%s: Unable to write sysfs value", __func__);

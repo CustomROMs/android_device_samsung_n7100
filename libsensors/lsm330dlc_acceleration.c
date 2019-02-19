@@ -172,7 +172,7 @@ int lsm330dlc_acceleration_set_delay(struct smdk4x12_sensors_handlers *handlers,
 
 float lsm330dlc_acceleration_convert(int value)
 {
-	return (float) value * (GRAVITY_EARTH / 1024.0f);
+	return (float) (value) * (GRAVITY_EARTH / 1024.0f);
 }
 
 extern int mFlushed;
@@ -219,7 +219,7 @@ int lsm330dlc_acceleration_get_data(struct smdk4x12_sensors_handlers *handlers,
 	event->acceleration.y = data->acceleration.y;
 	event->acceleration.z = data->acceleration.z;
 
-	event->magnetic.status = SENSOR_STATUS_ACCURACY_MEDIUM;
+	event->acceleration.status = SENSOR_STATUS_ACCURACY_MEDIUM;
 
 	do {
 		rc = read(input_fd, &input_event, sizeof(input_event));
