@@ -35,7 +35,8 @@
 #include "ssp.h"
 
 struct cm36651_proximity_data {
-	char path_delay[PATH_MAX];
+	char path_enable[PATH_MAX];
+	//char path_delay[PATH_MAX];
 };
 
 int cm36651_proximity_init(struct smdk4x12_sensors_handlers *handlers,
@@ -65,7 +66,8 @@ int cm36651_proximity_init(struct smdk4x12_sensors_handlers *handlers,
 		goto error;
 	}
 
-	snprintf(data->path_delay, PATH_MAX, "%s/prox_poll_delay", path);
+	snprintf(data->path_enable, PATH_MAX, "%s/enable", path);
+	//snprintf(data->path_delay, PATH_MAX, "%s/prox_poll_delay", path);
 
 	handlers->poll_fd = input_fd;
 	handlers->data = (void *) data;
@@ -115,7 +117,8 @@ int cm36651_proximity_activate(struct smdk4x12_sensors_handlers *handlers)
 
 	data = (struct cm36651_proximity_data *) handlers->data;
 
-	rc = ssp_sensor_enable(PROXIMITY_SENSOR);
+	//rc = ssp_sensor_enable(PROXIMITY_SENSOR);
+	rc = sysfs_value_write(data->path_enable, 1);
 	if (rc < 0) {
 		ALOGE("%s: Unable to enable ssp sensor", __func__);
 		return -1;
@@ -138,7 +141,8 @@ int cm36651_proximity_deactivate(struct smdk4x12_sensors_handlers *handlers)
 
 	data = (struct cm36651_proximity_data *) handlers->data;
 
-	rc = ssp_sensor_disable(PROXIMITY_SENSOR);
+	//rc = ssp_sensor_disable(PROXIMITY_SENSOR);
+	rc = sysfs_value_write(data->path_enable, 0);
 	if (rc < 0) {
 		ALOGE("%s: Unable to disable ssp sensor", __func__);
 		return -1;
@@ -151,11 +155,11 @@ int cm36651_proximity_deactivate(struct smdk4x12_sensors_handlers *handlers)
 
 int cm36651_proximity_set_delay(struct smdk4x12_sensors_handlers *handlers, int64_t delay)
 {
-	struct cm36651_proximity_data *data;
+/*	struct cm36651_proximity_data *data;
 	int rc;
-
+*/
 	ALOGD("%s(%p, %" PRId64 ")", __func__, handlers, delay);
-
+/*
 	if (handlers == NULL || handlers->data == NULL)
 		return -EINVAL;
 
@@ -166,7 +170,7 @@ int cm36651_proximity_set_delay(struct smdk4x12_sensors_handlers *handlers, int6
 		ALOGE("%s: Unable to write sysfs value", __func__);
 		return -1;
 	}
-
+*/
 	return 0;
 }
 
