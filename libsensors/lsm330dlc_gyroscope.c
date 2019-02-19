@@ -128,6 +128,12 @@ int lsm330dlc_gyroscope_activate(struct smdk4x12_sensors_handlers *handlers)
 		return -1;
 	}
 
+	rc = ssp_sensor_enable(GYROSCOPE_SENSOR);
+	if (rc < 0) {
+		ALOGE("%s: Unable to enable ssp sensor", __func__);
+		return -1;
+	}
+
 	handlers->activated = 1;
 
 	return 0;
@@ -145,6 +151,12 @@ int lsm330dlc_gyroscope_deactivate(struct smdk4x12_sensors_handlers *handlers)
 
 	data = (struct lsm330dlc_gyroscope_data *) handlers->data;
 
+	rc = sysfs_value_write(data->path_enable, 0);
+	if (rc < 0) {
+		ALOGE("%s: Unable to disable ssp sensor", __func__);
+		return -1;
+	}
+	
 	rc = ssp_sensor_disable(GYROSCOPE_SENSOR);
 	if (rc < 0) {
 		ALOGE("%s: Unable to disable ssp sensor", __func__);
