@@ -118,13 +118,8 @@ int bmp180_activate(struct smdk4x12_sensors_handlers *handlers)
 
 	data = (struct bmp180_data *) handlers->data;
 
+	//rc = ssp_sensor_enable(PRESSURE_SENSOR);
 	rc = sysfs_value_write(data->path_enable, 1);
-	if (rc < 0) {
-		ALOGE("%s: Unable to enable ssp sensor", __func__);
-		return -1;
-	}
-
-	rc = ssp_sensor_enable(PRESSURE_SENSOR);
 	if (rc < 0) {
 		ALOGE("%s: Unable to enable ssp sensor", __func__);
 		return -1;
@@ -147,12 +142,7 @@ int bmp180_deactivate(struct smdk4x12_sensors_handlers *handlers)
 
 	data = (struct bmp180_data *) handlers->data;
 
-	rc = ssp_sensor_disable(PRESSURE_SENSOR);
-	if (rc < 0) {
-		ALOGE("%s: Unable to disable ssp sensor", __func__);
-		return -1;
-	}
-
+	//rc = ssp_sensor_disable(PRESSURE_SENSOR);
 	rc = sysfs_value_write(data->path_enable, 0);
 	if (rc < 0) {
 		ALOGE("%s: Unable to disable ssp sensor", __func__);
