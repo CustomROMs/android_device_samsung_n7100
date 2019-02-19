@@ -36,7 +36,6 @@
 #include "ssp.h"
 
 struct bmp180_data {
-	char path_enable[PATH_MAX];
 	char path_delay[PATH_MAX];
 };
 
@@ -67,7 +66,6 @@ int bmp180_init(struct smdk4x12_sensors_handlers *handlers,
 		goto error;
 	}
 
-	snprintf(data->path_enable, PATH_MAX, "%s/enable", path);
 	snprintf(data->path_delay, PATH_MAX, "%s/pressure_poll_delay", path);
 
 	handlers->poll_fd = input_fd;
@@ -118,8 +116,7 @@ int bmp180_activate(struct smdk4x12_sensors_handlers *handlers)
 
 	data = (struct bmp180_data *) handlers->data;
 
-	//rc = ssp_sensor_enable(PRESSURE_SENSOR);
-	rc = sysfs_value_write(data->path_enable, 1);
+	rc = ssp_sensor_enable(PRESSURE_SENSOR);
 	if (rc < 0) {
 		ALOGE("%s: Unable to enable ssp sensor", __func__);
 		return -1;
@@ -142,8 +139,7 @@ int bmp180_deactivate(struct smdk4x12_sensors_handlers *handlers)
 
 	data = (struct bmp180_data *) handlers->data;
 
-	//rc = ssp_sensor_disable(PRESSURE_SENSOR);
-	rc = sysfs_value_write(data->path_enable, 0);
+	rc = ssp_sensor_disable(PRESSURE_SENSOR);
 	if (rc < 0) {
 		ALOGE("%s: Unable to disable ssp sensor", __func__);
 		return -1;
@@ -165,11 +161,6 @@ int bmp180_set_delay(struct smdk4x12_sensors_handlers *handlers, int64_t delay)
 		return -EINVAL;
 
 	data = (struct bmp180_data *) handlers->data;
-
-	if (delay < 10000000)
-		delay = 10;
-	else
-		delay = delay / 1000000;
 
 	rc = sysfs_value_write(data->path_delay, (int) delay);
 	if (rc < 0) {

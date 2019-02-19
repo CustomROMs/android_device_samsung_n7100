@@ -36,7 +36,6 @@
 #include "ssp.h"
 
 struct lsm330dlc_gyroscope_data {
-	char path_enable[PATH_MAX];
 	char path_delay[PATH_MAX];
 
 	sensors_vec_t gyro;
@@ -69,8 +68,6 @@ int lsm330dlc_gyroscope_init(struct smdk4x12_sensors_handlers *handlers,
 		goto error;
 	}
 
-	snprintf(data->path_enable, PATH_MAX, "%s/enable", path);
-	
 	snprintf(data->path_delay, PATH_MAX, "%s/gyro_poll_delay", path);
 
 	handlers->poll_fd = input_fd;
@@ -121,8 +118,7 @@ int lsm330dlc_gyroscope_activate(struct smdk4x12_sensors_handlers *handlers)
 
 	data = (struct lsm330dlc_gyroscope_data *) handlers->data;
 
-	//rc = ssp_sensor_enable(GYROSCOPE_SENSOR);
-	rc = sysfs_value_write(data->path_enable, 1);
+	rc = ssp_sensor_enable(GYROSCOPE_SENSOR);
 	if (rc < 0) {
 		ALOGE("%s: Unable to enable ssp sensor", __func__);
 		return -1;
@@ -168,8 +164,7 @@ int lsm330dlc_gyroscope_set_delay(struct smdk4x12_sensors_handlers *handlers, in
 
 	data = (struct lsm330dlc_gyroscope_data *) handlers->data;
 
-	//rc = sysfs_value_write(data->path_delay, delay);
-	rc = sysfs_value_write(data->path_enable, 0);
+	rc = sysfs_value_write(data->path_delay, delay);
 	if (rc < 0) {
 		ALOGE("%s: Unable to write sysfs value", __func__);
 		return -1;
