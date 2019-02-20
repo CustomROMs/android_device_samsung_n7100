@@ -596,6 +596,23 @@ int akm8963_set_delay(struct smdk4x12_sensors_handlers *handlers, int64_t delay)
 
 	data->delay = delay;
 
+	path_delay[PATH_MAX] = "/sys/class/sensors/ssp_sensor/ori_poll_delay";
+
+	ALOGD("%s(%p, %" PRId64 ")", __func__, handlers, delay);
+
+	if (handlers == NULL || handlers->data == NULL)
+		return -EINVAL;
+
+	data = (struct akm8963_data *) handlers->data;
+
+	rc = sysfs_value_write(path_delay, (int) delay);
+	if (rc < 0) {
+		ALOGE("%s: Unable to write sysfs value", __func__);
+		return -1;
+	}
+
+	data->delay = delay;
+
 	return 0;
 }
 
