@@ -74,7 +74,8 @@ PRODUCT_PACKAGES += \
 
 # RIL & GPS fix
 PRODUCT_PACKAGES += \
-    libsecril-shim 
+    libsecril-shim \
+    gps.smdk4x12
 
 # Sensors
 PRODUCT_PACKAGES += \
@@ -136,8 +137,7 @@ PRODUCT_COPY_FILES += \
 
 # Kernel control script
  PRODUCT_COPY_FILES += \
-     $(LOCAL_PATH)/configs/94kernel:system/etc/init.d/94kernel \
-     $(LOCAL_PATH)/configs/94-kernel.sh:system/addon.d/94-kernel.sh
+     $(LOCAL_PATH)/configs/94kernel:system/etc/init.d/94kernel 
 
 $(call inherit-product-if-exists, vendor/samsung/n7100/n7100-vendor.mk)
 
