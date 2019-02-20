@@ -221,7 +221,6 @@ int64_t sysfs_value_read(char *path)
 	int64_t value;
 	int fd = -1;
 	int rc;
-	int i;
 
 	if (path == NULL)
 		return -1;
@@ -234,11 +233,7 @@ int64_t sysfs_value_read(char *path)
 	if (rc <= 0)
 		goto error;
 
-	i = 0;
-	while (buffer[i] == ' ' || buffer[i] == '\t')
-		i++;
-
-	value = (int64_t)strtoimax(&buffer[i], NULL, 10);
+	value = (int64_t)strtoimax(buffer, NULL, 10);
 	goto complete;
 
 error:
