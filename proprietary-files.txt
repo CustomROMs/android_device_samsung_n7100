@@ -1,5 +1,4 @@
-bin/glgps
-lib/hw/gps.exynos4.vendor.so
+bin/gpsd
 lib/hw/gps.default.so
 lib/libakm.so
 lib/libsec-ril.so

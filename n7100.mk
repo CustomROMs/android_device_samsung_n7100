@@ -74,7 +74,15 @@ PRODUCT_PACKAGES += \
 
 # RIL & GPS fix
 PRODUCT_PACKAGES += \
-    libsecril-shim 
+    libsecril-shim \
+    gpsd_shim
+
+# BCM47511 GPS 
+PRODUCT_COPY_FILES += \
+    device/samsung/n7100/gps/gps.conf:system/etc/gps.conf \
+    device/samsung/n7100/gps/gpsd:system/vendor/bin/gpsd \
+    device/samsung/n7100/gps/gps.xml:system/vendor/etc/gps.xml \
+    device/samsung/n7100/gps/gps.manta.so:system/lib/hw/gps.manta.so
 
 # Sensors
 PRODUCT_PACKAGES += \
@@ -87,14 +95,11 @@ PRODUCT_PACKAGES += \
     libnfc_jni \
     Nfc \
     Tag
-
-# Gps
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/gps.xml:system/etc/gps.xml \
-    $(LOCAL_PATH)/gps_daemon.sh:system/bin/gps_daemon.sh
-
+    
+#GPS
 PRODUCT_PACKAGES += \
-	libdmitry 
+	libdmitry \
+    libshim_gpsd
 
 # NFC HAL
 PRODUCT_PACKAGES += \
