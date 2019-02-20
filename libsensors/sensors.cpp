@@ -328,7 +328,7 @@ int sensors_poll_context_t::flush(int handle)
 
 /*****************************************************************************/
 
-static int device__close(struct hw_device_t *dev)
+static int poll__close(struct hw_device_t *dev)
 {
     sensors_poll_context_t *ctx = (sensors_poll_context_t *)dev;
     if (ctx) {
