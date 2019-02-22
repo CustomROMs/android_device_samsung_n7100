@@ -68,7 +68,7 @@ int lsm330dlc_gyroscope_init(struct smdk4x12_sensors_handlers *handlers,
 		goto error;
 	}
 
-	snprintf(data->path_delay, PATH_MAX, "%s/gyro_poll_delay", path);
+	snprintf(data->path_delay, PATH_MAX, "%s/poll_delay", path);
 
 	handlers->poll_fd = input_fd;
 	handlers->data = (void *) data;

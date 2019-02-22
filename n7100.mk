@@ -80,7 +80,7 @@ PRODUCT_PACKAGES += \
 # BCM47511 GPS 
 PRODUCT_COPY_FILES += \
     device/samsung/n7100/gps/gps.conf:system/etc/gps.conf \
-    device/samsung/n7100/gps/gpsd:system/vendor/bin/gpsd \
+#    device/samsung/n7100/gps/gpsd:system/vendor/bin/gpsd \
     device/samsung/n7100/gps/gps.xml:system/vendor/etc/gps.xml \
     device/samsung/n7100/gps/gps.manta.so:system/lib/hw/gps.manta.so
 
@@ -95,7 +95,7 @@ PRODUCT_PACKAGES += \
     libnfc_jni \
     Nfc \
     Tag
-    
+
 #GPS
 PRODUCT_PACKAGES += \
 	libdmitry \
