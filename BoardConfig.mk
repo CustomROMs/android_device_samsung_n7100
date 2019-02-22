@@ -39,7 +39,9 @@ TARGET_KERNEL_CONFIG := lineageos_n7100_defconfig
 
 TARGET_SPECIFIC_HEADER_PATH += device/samsung/n7100/include
 
-TARGET_LD_SHIM_LIBS += /system/vendor/bin/gpsd|gpsd_shim.so
+TARGET_LD_SHIM_LIBS += \
+        /system/vendor/bin/gpsd|gpsd_shim.so \
+        /system/lib/libgui.so|gpsd_shim.so
 
 # Cache
 BOARD_CACHEIMAGE_PARTITION_SIZE := 104857600
