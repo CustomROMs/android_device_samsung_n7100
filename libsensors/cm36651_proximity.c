@@ -150,12 +150,12 @@ int cm36651_proximity_deactivate(struct smdk4x12_sensors_handlers *handlers)
 }
 
 int cm36651_proximity_set_delay(struct smdk4x12_sensors_handlers *handlers, int64_t delay)
-{/*
+{
 	struct cm36651_proximity_data *data;
 	int rc;
-*/
+
 	ALOGD("%s(%p, %" PRId64 ")", __func__, handlers, delay);
-/*
+
 	if (handlers == NULL || handlers->data == NULL)
 		return -EINVAL;
 
@@ -166,7 +166,7 @@ int cm36651_proximity_set_delay(struct smdk4x12_sensors_handlers *handlers, int6
 		ALOGE("%s: Unable to write sysfs value", __func__);
 		return -1;
 	}
-*/
+
 	return 0;
 }
 
