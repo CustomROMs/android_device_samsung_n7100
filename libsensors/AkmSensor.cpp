@@ -238,7 +238,7 @@ int AkmSensor::readEvents(sensors_event_t* data, int count)
             count--;
             numEventReceived++;
             mFlushed &= ~(0x01 << sensorId);
-            ALOGD_IF(DEBUG, "AkmSensor: %s Flushed sensorId: %d", __func__, sensorId);
+//            ALOGD_IF(DEBUG, "AkmSensor: %s Flushed sensorId: %d", __func__, sensorId);
         }
         sensorId++;
     }
