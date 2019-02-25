@@ -1,3 +1,4 @@
+/*
 #
 # Copyright (C) 2016 The LineageOS Project
 #
@@ -13,15 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+*/
 
-LOCAL_PATH := $(call my-dir)
+#include <sys/types.h>
 
-include $(CLEAR_VARS)
+extern "C" {
+  ssize_t _ZN7android13SensorManager13getSensorListEPPKPKNS_6SensorE(void* thiz, void* list);
 
-LOCAL_SRC_FILES := samsung_gps.cpp
-LOCAL_SHARED_LIBRARIES := libgui
-LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)
-LOCAL_MODULE := libshim_gpsd
-LOCAL_MODULE_TAGS := optional
-
-include $(BUILD_SHARED_LIBRARY)
+  ssize_t _ZNK7android13SensorManager13getSensorListEPPKPKNS_6SensorE(void* thiz, void* list) {
+    return _ZN7android13SensorManager13getSensorListEPPKPKNS_6SensorE(thiz, list);
+  }
+}

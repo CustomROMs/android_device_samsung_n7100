@@ -79,9 +79,8 @@ PRODUCT_PACKAGES += \
 
 # BCM47511 GPS 
 PRODUCT_COPY_FILES += \
-    device/samsung/n7100/gps/gps.conf:system/etc/gps.conf \
-    device/samsung/n7100/gps/gps.xml:system/vendor/etc/gps.xml \
-    device/samsung/n7100/gps/gps.manta.so:system/lib/hw/gps.manta.so
+    $(LOCAL_PATH)/gps/gps.xml:system/vendor/etc/gps.xml \
+    $(LOCAL_PATH)/gps_daemon.sh:system/bin/gps_daemon.sh
 
 # Sensors
 PRODUCT_PACKAGES += \
