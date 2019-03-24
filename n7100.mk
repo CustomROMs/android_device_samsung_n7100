@@ -14,24 +14,11 @@
 # limitations under the License.
 #
 
-# Include common makefile
-$(call inherit-product, device/samsung/smdk4412-common/common.mk)
-
 LOCAL_PATH := device/samsung/n7100
 COMMON_PATH := device/samsung/smdk4412-common
 
 # Overlay
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
-
-# ADB
-PRODUCT_PROPERTY_OVERRIDES += \
-	ro.debug_level=0x4948 \
-	ro.adb.secure=0 \
-	ro.secure=0 \
-	ro.debuggable=1 \
-	persist.service.adb.enable=1 \
-	persist.service.debuggable=1 \
-	persist.sys.usb.config=mtp,adb
 
 # Screen density
 PRODUCT_AAPT_CONFIG := normal
@@ -47,15 +34,14 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/tiny_hw.xml:system/etc/sound/t03g
 
-# Camera
+# Sensors
 PRODUCT_PACKAGES += \
-    camera.smdk4x12
+    sensors.smdk4x12
 
-# f2fs
-PRODUCT_PACKAGES += \
-    fibmap.f2fs \
-    fsck.f2fs \
-    mkfs.f2fs
+# Gps
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/gps.xml:system/vendor/etc/gps.xml \
+    $(LOCAL_PATH)/gps_daemon.sh:system/vendor/bin/gps_daemon.sh
 
 # idc 
 PRODUCT_COPY_FILES += \
@@ -66,25 +52,16 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/keylayout/sec_e-pen.kl:system/usr/keylayout/sec_e-pen.kl \
     $(LOCAL_PATH)/keylayout/sec_touchkey.kl:system/usr/keylayout/sec_touchkey.kl
 
-
 # Product specific Packages
 PRODUCT_PACKAGES += \
-    DeviceSettings \
-    SamsungServiceMode
+    libsecril-client \
+    libsecril-client-sap \
+    SamsungServiceMode \
+    tinyplay
 
-# RIL & GPS fix
+# RIL
 PRODUCT_PACKAGES += \
-    libsecril-shim \
-    gpsd_shim
-
-# BCM47511 GPS 
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/gps/gps.xml:system/vendor/etc/gps.xml \
-    $(LOCAL_PATH)/gps_daemon.sh:system/bin/gps_daemon.sh
-
-# Sensors
-PRODUCT_PACKAGES += \
-    sensors.smdk4x12
+    libsecril-shim
 
 # NFC
 PRODUCT_PACKAGES += \
@@ -94,14 +71,15 @@ PRODUCT_PACKAGES += \
     Nfc \
     Tag
 
-#GPS
+# Camera
 PRODUCT_PACKAGES += \
-	libdmitry \
-    libshim_gpsd
+    camera.smdk4x12
 
-# NFC HAL
+# f2fs
 PRODUCT_PACKAGES += \
-    android.hardware.nfc@1.0-impl
+	fibmap.f2fs \
+	fsck.f2fs \
+	mkfs.f2fs
 
 PRODUCT_COPY_FILES += \
     frameworks/base/nfc-extras/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml \
@@ -117,6 +95,9 @@ endif
 PRODUCT_COPY_FILES += \
     $(NFCEE_ACCESS_PATH):system/etc/nfcee_access.xml
 
+PRODUCT_PACKAGES += \
+    com.android.nfc_extras
+
 # RIL
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.telephony.ril_class=SamsungExynos4RIL \
@@ -126,19 +107,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
-    frameworks/native/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
     frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml
 
 # UMS
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/ums_init.sh:system/bin/ums_init.sh
 
-# Kernel control script
- PRODUCT_COPY_FILES += \
-     $(LOCAL_PATH)/configs/94kernel:system/etc/init.d/94kernel \
-     $(LOCAL_PATH)/configs/94-kernel.sh:system/addon.d/94-kernel.sh
-
 $(call inherit-product-if-exists, vendor/samsung/n7100/n7100-vendor.mk)
-
-# Vendor properties
--include $(LOCAL_PATH)/vendor_prop.mk
