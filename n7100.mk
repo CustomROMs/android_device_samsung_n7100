@@ -59,6 +59,9 @@ PRODUCT_PACKAGES += \
     SamsungServiceMode \
     tinyplay
 
+PRODUCT_PACKAGES += \
+    libdmitry
+
 # RIL
 PRODUCT_PACKAGES += \
     libsecril-shim
