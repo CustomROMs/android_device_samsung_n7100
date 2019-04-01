@@ -11,7 +11,7 @@
        acNmeaOutName="/data/gps/nmea_out"
        ctrlPipe="/data/gps/glgpsctrl"
 
-       acLogDirectory="/sdcard/gps/broadcom/"
+       acLogDirectory="/storage/sdcard0/gps/broadcom/storage"
 
        arp-supl-enable="true"
        arp-supl-cap-msb="true"
@@ -28,6 +28,7 @@
        SuplUT3Seconds="20"
        SuplVersion="1"
 
+       SensorsEnable="false"
        LbsSyncLto="false"
        SyncLto="true"
        ltoFileName="lto2.dat"
@@ -42,7 +43,7 @@
        LogPriMask="LOG_INFO"
        LogFacMask="LOG_GLLAPI | LOG_NMEA | LOG_RAWDATA"
        FrqPlan="FRQ_PLAN_26MHZ_2PPM_26MHZ_300PPB"
-       RfType="GL_RF_47511_BRCM_EXT_LNA"
+       RfType="GL_RF_4752_BRCM_EXT_LNA"
        WarmStandbyTimeout1Seconds="10"
        WarmStandbyTimeout2Seconds="15"
     >
