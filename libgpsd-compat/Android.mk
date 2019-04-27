@@ -1,5 +1,5 @@
-#
-# Copyright (C) 2012 The CyanogenMod Project
+# Copyright (C) 2015 The Android Open Source Project
+# Written by Dmitry Grinberg
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,7 +12,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
-PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/rr_n7100.mk
+LOCAL_PATH := $(call my-dir)
+
+include $(CLEAR_VARS)
+
+LOCAL_SHARED_LIBRARIES := liblog libhardware_legacy libgui libbinder libutils libsensor
+LOCAL_SRC_FILES := libgpsd-compat.c
+LOCAL_MODULE := libgpsd-compat
+LOCAL_MODULE_TAGS := optional
+LOCAL_CFLAGS := -disable-asm
+LOCALC_FLAGS := -fpic
+
+include $(BUILD_SHARED_LIBRARY)

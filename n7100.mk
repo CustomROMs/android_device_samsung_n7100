@@ -18,7 +18,8 @@ LOCAL_PATH := device/samsung/n7100
 COMMON_PATH := device/samsung/smdk4412-common
 
 # Overlay
-DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
+DEVICE_PACKAGE_OVERLAYS += \
+    $(LOCAL_PATH)/overlay 
 
 # Screen density
 PRODUCT_AAPT_CONFIG := normal
@@ -40,8 +41,8 @@ PRODUCT_PACKAGES += \
 
 # Gps
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/gps.xml:system/vendor/etc/gps.xml \
-    $(LOCAL_PATH)/gps_daemon.sh:system/vendor/bin/gps_daemon.sh
+    $(LOCAL_PATH)/gps/gps.conf:system/etc/gps.conf \
+    $(LOCAL_PATH)/gps/gps.xml:system/etc/gps.xml
 
 # idc 
 PRODUCT_COPY_FILES += \
@@ -58,6 +59,9 @@ PRODUCT_PACKAGES += \
     libsecril-client-sap \
     SamsungServiceMode \
     tinyplay
+
+PRODUCT_PACKAGES += \
+    libgpsd-compat
 
 # RIL
 PRODUCT_PACKAGES += \
